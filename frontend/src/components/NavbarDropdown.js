@@ -1,26 +1,26 @@
-import { Fragment } from 'react'
-import { Menu, Transition } from '@headlessui/react'
-import { ChevronDownIcon } from '@heroicons/react/solid'
-import { Link } from 'react-router-dom'
+import { Fragment } from "react";
+import { Menu, Transition } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/solid";
+import { Link } from "react-router-dom";
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
-export default function NavbarDropdown({userInfo}) {
-    console.log(userInfo)
+export default function NavbarDropdown({ userInfo }) {
+  console.log(userInfo);
   return (
     <Menu as="div" className="relative hidden lg:inline-block text-left z-50">
       <div>
         <Menu.Button className="ml-3 mt-2">
-            <div  className="flex flex-row items-center">
-                    <img
-                        src={`https://avatars.dicebear.com/api/initials/${userInfo.name}.svg`}
-                        alt
-                        className="h-10 w-10 bg-gray-200 border rounded-full"
-                    />
-                    <ChevronDownIcon className='w-4 h-4 text-black' />
-            </div>
+          <div className="flex flex-row items-center">
+            <img
+              src={`https://avatars.dicebear.com/api/initials/${userInfo.name}.svg`}
+              alt={`${userInfo.name} Avatar`}
+              className="h-10 w-10 bg-gray-200 border rounded-full"
+            />
+            <ChevronDownIcon className="w-4 h-4 text-black" />
+          </div>
         </Menu.Button>
       </div>
 
@@ -40,33 +40,32 @@ export default function NavbarDropdown({userInfo}) {
                 <Link
                   to={`/profile`}
                   className={classNames(
-                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                    'block px-4 py-2 text-sm'
+                    active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+                    "block px-4 py-2 text-sm"
                   )}
                 >
                   User Profile
                 </Link>
               )}
             </Menu.Item>
-            {
-                userInfo.isAdmin &&
-                <Menu.Item>
+            {userInfo.isAdmin && (
+              <Menu.Item>
                 {({ active }) => (
-                    <Link
+                  <Link
                     to={`/admin`}
                     className={classNames(
-                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                        'block px-4 py-2 text-sm'
+                      active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+                      "block px-4 py-2 text-sm"
                     )}
-                    >
+                  >
                     Admin Panel
-                    </Link>
+                  </Link>
                 )}
-                </Menu.Item>
-            }
+              </Menu.Item>
+            )}
           </div>
         </Menu.Items>
       </Transition>
     </Menu>
-  )
+  );
 }

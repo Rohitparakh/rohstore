@@ -59,7 +59,7 @@ const ProductReview = () => {
           <form onSubmit={submitHandler} className="w-full">
             <div className="mb-4">
               <label
-                for="rating"
+                htmlFor="rating"
                 className="block mb-2 text-sm font-medium text-gray-900 "
               >
                 Rating
@@ -79,7 +79,7 @@ const ProductReview = () => {
             </div>
             <div>
               <label
-                for="countries"
+                htmlFor="countries"
                 className="block mb-2 text-sm font-medium text-gray-900 "
               >
                 Comment

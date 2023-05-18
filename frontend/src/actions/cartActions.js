@@ -9,8 +9,8 @@ import {
 var env = process.env.NODE_ENV;
 var apiUrl;
 env === "development" ? (apiUrl = "http://localhost:8000") : (apiUrl = "");
-console.log(env);
-console.log(apiUrl);
+// console.log(env);
+// console.log(apiUrl);
 
 export const addToCart = (id, qty) => async (dispatch, getState) => {
   const { data } = await axios.get(`${apiUrl}/api/products/${id}`);

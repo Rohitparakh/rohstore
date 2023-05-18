@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,14 +11,24 @@ const AdminCreateProduct = () => {
   var apiUrl;
   env === "development" ? (apiUrl = "http://localhost:8000") : (apiUrl = "");
 
+  const ref = useRef();
   const [openSidebar, setOpenSidebar] = useState(false);
   const [name, setName] = useState("");
+  const [sku, setSku] = useState("");
+  const [model, setModel] = useState("");
+  const [weight, setWeight] = useState("");
+  const [dimensions, setDimensions] = useState("");
+  const [material, setMaterial] = useState("");
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState("");
   const [brand, setBrand] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState([]);
+  const [categoryInput, setCategoryInput] = useState("");
   const [countInStock, setCountInStock] = useState(0);
+  const [tag, setTag] = useState([]);
+  const [tagInput, setTagInput] = useState("");
   const [description, setDescription] = useState("");
+  const [formSubmit, setFormSubmit] = useState(false);
 
   const [uploading, setUploading] = useState(false);
 
@@ -38,26 +48,41 @@ const AdminCreateProduct = () => {
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
-
+  // console.log(successUpdate)
+  // console.log(productUpdate)
+  // console.log(productDetails)
   useEffect(() => {
+    // console.log(dispatch)
+    // console.log(navigate)
+    // console.log(id)
+    console.log(product)
+    // console.log(successUpdate)
     if (successUpdate) {
       dispatch({ type: PRODUCT_UPDATE_RESET });
-      navigate("/admin/productlist");
+      window.location.reload();
     } else {
       if (product === undefined || !product.name || product._id !== id) {
         dispatch(listProductsDetails(id));
       } else {
         setName(product.name);
+        setSku(product.sku);
+        setModel(product.model);
+        setWeight(product.weight);
+        setDimensions(product.dimensions);
+        setMaterial(product.material);
         setPrice(product.price);
         setImage(product.image);
         setBrand(product.brand);
         setCategory(product.category);
+        setTag(product.tag);
         setCountInStock(product.countInStock);
         setDescription(product.description);
       }
     }
   }, [dispatch, navigate, id, product, successUpdate]);
+  // }, [dispatch, navigate, id, product, successUpdate]);
 
+  // console.log(successUpdate);
   const submitHandler = (e) => {
     e.preventDefault();
     // update product action
@@ -65,14 +90,21 @@ const AdminCreateProduct = () => {
       updateProduct({
         _id: id,
         name,
+        sku,
+        model,
+        weight,
+        material,
+        dimensions,
         price,
         image,
         brand,
         category,
+        tag,
         description,
         countInStock,
       })
     );
+    // setFormSubmit(true);
   };
 
   const uploadFileHandler = async (e) => {
@@ -101,6 +133,55 @@ const AdminCreateProduct = () => {
     }
   };
 
+  const removeCategory = (cat) => {
+    const newCategory = category.filter((single) => {
+      return single !== cat;
+    });
+    // console.log(newCategory);
+    setCategory(newCategory);
+  };
+
+  const updateCategory = () => {
+    // .replace(/,\s*$/, "") removes trailing commas from the string
+    setCategory([...category, categoryInput.replace(/,\s*$/, "")]);
+    setCategoryInput("");
+  };
+  
+  const removeTag = (cat) => {
+    const newTag = tag.filter((single) => {
+      return single !== cat;
+    });
+    // console.log(newTag);
+    setTag(newTag);
+  };
+
+  const updateTag = () => {
+    // .replace(/,\s*$/, "") removes trailing commas from the string
+    setTag([...tag, tagInput.replace(/,\s*$/, "")]);
+    setTagInput("");
+  };
+
+
+  function handleKeyUp(event) {
+    event.preventDefault();
+    console.log(event.target.id==="category")
+    // Enter
+    if ( event.keyCode ===188) {
+      if(event.target.id==="category"){
+        console.log('cat')
+        updateCategory()
+      }
+      if(event.target.id==="tag"){
+        console.log('tag')
+        updateTag()
+      }
+    }
+
+    if(event.keyCode === 13){
+      submitHandler()
+    }
+  }
+
   return (
     <div className="flex flex-row min-h-screen bg-gray-100 text-gray-800 md:overflow-x-hidden">
       <Sidebar openSidebar={openSidebar} />
@@ -108,10 +189,10 @@ const AdminCreateProduct = () => {
         <header className="header bg-white shadow py-4 px-4">
           <div className="header-content flex items-center flex-row">
             <div>
-              <a href className="flex flex-row items-center">
+              <a className="flex flex-row items-center">
                 <img
                   src={`https://avatars.dicebear.com/api/initials/${userInfo.name}.svg`}
-                  alt
+                  alt=""
                   className="h-10 w-10 bg-gray-200 border rounded-full"
                 />
                 <span className="flex flex-col ml-2">
@@ -135,9 +216,9 @@ const AdminCreateProduct = () => {
                   onClick={() => setOpenSidebar(!openSidebar)}
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="M4 6h16M4 12h16M4 18h16"
                   />
                 </svg>
@@ -151,9 +232,9 @@ const AdminCreateProduct = () => {
                   onClick={() => setOpenSidebar(!openSidebar)}
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="M6 18L18 6M6 6l12 12"
                   />
                 </svg>
@@ -179,10 +260,10 @@ const AdminCreateProduct = () => {
           ) : error ? (
             <p>{error}</p>
           ) : (
-            <form autoComplete="off" onSubmit={submitHandler}>
+            <form ref={ref} autoComplete="off" onKeyUp={handleKeyUp} >
               <div className="mb-6">
                 <label
-                  for="email"
+                  htmlFor="email"
                   className="block mb-2 text-sm font-medium text-gray-900 "
                 >
                   Product Name
@@ -198,7 +279,23 @@ const AdminCreateProduct = () => {
               </div>
               <div className="mb-6">
                 <label
-                  for="email"
+                  htmlFor="email"
+                  className="block mb-2 text-sm font-medium text-gray-900 "
+                >
+                  Product SKU
+                </label>
+                <input
+                  type="text"
+                  id="email"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                  placeholder="Enter Product Name"
+                  value={sku}
+                  onChange={(e) => setSku(e.target.value)}
+                />
+              </div>
+              <div className="mb-6">
+                <label
+                  htmlFor="email"
                   className="block mb-2 text-sm font-medium text-gray-900 "
                 >
                   Product Price
@@ -214,7 +311,7 @@ const AdminCreateProduct = () => {
               </div>
               <div className="mb-6">
                 <label
-                  for="email"
+                  htmlFor="email"
                   className="block mb-2 text-sm font-medium text-gray-900 "
                 >
                   Product Brand
@@ -230,23 +327,123 @@ const AdminCreateProduct = () => {
               </div>
               <div className="mb-6">
                 <label
-                  for="email"
+                  htmlFor="email"
                   className="block mb-2 text-sm font-medium text-gray-900 "
                 >
-                  Product Category
+                  Product Model
                 </label>
                 <input
                   type="text"
                   id="email"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                  placeholder="Enter Product Category"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
+                  placeholder="Enter Product Name"
+                  value={model}
+                  onChange={(e) => setModel(e.target.value)}
                 />
               </div>
               <div className="mb-6">
                 <label
-                  for="email"
+                  htmlFor="email"
+                  className="block mb-2 text-sm font-medium text-gray-900 "
+                >
+                  Product Weight
+                </label>
+                <input
+                  type="text"
+                  id="email"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                  placeholder="Enter Product Name"
+                  value={weight}
+                  onChange={(e) => setWeight(e.target.value)}
+                />
+              </div>
+              <div className="mb-6">
+                <label
+                  htmlFor="email"
+                  className="block mb-2 text-sm font-medium text-gray-900 "
+                >
+                  Product Dimensions
+                </label>
+                <input
+                  type="text"
+                  id="email"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                  placeholder="Enter Product Name"
+                  value={dimensions}
+                  onChange={(e) => setDimensions(e.target.value)}
+                />
+              </div>
+              <div className="mb-6">
+                <label
+                  htmlFor="email"
+                  className="block mb-2 text-sm font-medium text-gray-900 "
+                >
+                  Product Material
+                </label>
+                <input
+                  type="text"
+                  id="email"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                  placeholder="Enter Product Name"
+                  value={material}
+                  onChange={(e) => setMaterial(e.target.value)}
+                />
+              </div>
+              <div className="mb-6">
+                <label
+                  htmlFor="email"
+                  className="block mb-2 text-sm font-medium text-gray-900 "
+                >
+                  Product Category
+                </label>
+                {category.map((single, i) => {
+                  return (
+                    <span className="tag" key={i}>
+                      {single}
+                      <p onClick={() => removeCategory(single)}>x</p>
+                    </span>
+                  );
+                })}
+                <input
+                  type="text"
+                  id="category"
+                  className=" mt-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                  placeholder="Enter Product Category"
+                  value={categoryInput}
+                  onChange={(e) => {
+                    setCategoryInput(e.target.value);
+                  }}
+                />
+              </div>
+              <div className="mb-6">
+                <label
+                  htmlFor="email"
+                  className="block mb-2 text-sm font-medium text-gray-900 "
+                >
+                  Product Tags
+                </label>
+                {tag.map((single, i) => {
+                  return (
+                    <span className="tag" key={i}>
+                      {single}
+                      <p onClick={() => removeTag(single)}>x</p>
+                    </span>
+                  );
+                })}
+                <input
+                  type="text"
+                  id="tag"
+                  className=" mt-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                  placeholder="Enter Product Category"
+                  value={tagInput}
+                  onChange={(e) => {
+                    setTagInput(e.target.value);
+                  }}
+                />
+              </div>
+              <div className="mb-6">
+                <label
+                  htmlFor="email"
                   className="block mb-2 text-sm font-medium text-gray-900 "
                 >
                   Product Stock
@@ -260,9 +457,9 @@ const AdminCreateProduct = () => {
                   onChange={(e) => setCountInStock(e.target.value)}
                 />
               </div>
-              <div class="mb-6">
+              <div className="mb-6">
                 <label
-                  for="message"
+                  htmlFor="message"
                   className="block mb-2 text-sm font-medium text-gray-900 "
                 >
                   Product Description
@@ -278,7 +475,7 @@ const AdminCreateProduct = () => {
               </div>
               <div className="mb-6">
                 <label
-                  for="email"
+                  htmlFor="email"
                   className="block mb-2 text-sm font-medium text-gray-900 "
                 >
                   Product Image URL
@@ -295,7 +492,7 @@ const AdminCreateProduct = () => {
               <div className="mb-6">
                 <label
                   className="block mb-2 text-sm font-medium text-gray-900 "
-                  for="product_image"
+                  htmlFor="product_image"
                 >
                   Upload Product Image
                 </label>
@@ -323,6 +520,7 @@ const AdminCreateProduct = () => {
               <button
                 type="submit"
                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center "
+                onClick={submitHandler}
               >
                 Update Product
               </button>

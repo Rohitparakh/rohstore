@@ -117,7 +117,7 @@ const Category = () => {
               <div className="">
                 <div className="mb-6">
                   <label
-                    for="base-input"
+                    htmlFor="base-input"
                     className="block mb-2 text-sm font-medium text-gray-900 "
                   >
                     Min Price
@@ -131,7 +131,7 @@ const Category = () => {
                 </div>
                 <div className="mb-6">
                   <label
-                    for="base-input"
+                    htmlFor="base-input"
                     className="block mb-2 text-sm font-medium text-gray-900 "
                   >
                     Max Price

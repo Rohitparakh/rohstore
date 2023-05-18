@@ -1,0 +1,16 @@
+span.tag {
+  background: lightgrey;
+  padding: 5px 8px;
+  margin: 0 5px;
+  border-radius: 5px;
+}
+
+span.tag p {
+  display: inline-block;
+  margin: 0 2px 0 5px;
+  cursor: pointer;
+}
+
+.mt-10 {
+  margin: 15px 0;
+}

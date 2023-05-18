@@ -146,7 +146,7 @@ function Signup() {
                   <div className="flex items-center justify-end">
                     {/* <div className="flex items-center">
                         <input id="remember-me" name="remember-me" type="checkbox" placeholder="Your password" className="w-4 h-4 text-blue-400 border-gray-200 rounded  focus:ring-blue-500" />
-                        <label for="remember-me" className="block ml-2 text-sm text-neutral-600"> Remember me </label>
+                        <label htmlFor="remember-me" className="block ml-2 text-sm text-neutral-600"> Remember me </label>
                     </div> */}
                     {/* <div className="text-sm">
                         <a href="#" className="font-medium text-blue-400 hover:text-blue-500"> Forgot your password? </a>
