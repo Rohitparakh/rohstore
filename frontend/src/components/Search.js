@@ -25,7 +25,7 @@ const Search = () => {
         `${apiUrl}/api/search?query=${search !== "" ? search : undefined}`
       );
       setSearchData(data);
-      console.log(data);
+      // console.log(data);
     }, 500),
     []
   );

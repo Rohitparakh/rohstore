@@ -8,7 +8,7 @@ function classNames(...classes) {
 }
 
 export default function NavbarDropdown({ userInfo }) {
-  console.log(userInfo);
+  // console.log(userInfo);
   return (
     <Menu as="div" className="relative hidden lg:inline-block text-left z-50">
       <div>

@@ -27,9 +27,8 @@ const searchProducts = asyncHandler(async (req, res) => {
   //     throw new Error("Product not found");
   //   }
   // var query = { name: req.query.query };
-  // var query = { name: /req.query.query/ };
   var query = { name: {$regex : req.query.query, $options:"i"} };
-  console.log(query)
+  // console.log(query)
   var result = await Product.find(query).exec();
   res.json(result);
 });
